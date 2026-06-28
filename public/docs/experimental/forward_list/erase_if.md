@@ -1,0 +1,62 @@
+# std::experimental::erase_if (std::forward_list)
+
+Definido no cabeçalho `[<experimental/forward_list>](<https://en.cppreference.com/mwiki/index.php?title=cpp/header/experimental/forward_list&action=edit&redlink=1> "cpp/header/experimental/forward list \(page does not exist\)")`
+
+```c
+template< class T, class Alloc, class Pred >
+void erase_if( std::forward_list<T, Alloc>& c, Pred pred );
+```
+
+Apaga todos os elementos que satisfazem o predicate pred do container. Equivalente a c.remove_if(pred);.
+
+### Parâmetros
+
+- **c** — container do qual apagar
+- **pred** — predicate que determina quais elementos devem ser apagados
+
+### Complexidade
+
+Linear.
+
+### Exemplo
+
+Execute este código
+```cpp
+    #include <experimental/forward_list>
+    #include <iostream>
+     
+    template<typename Os, typename Container>
+    inline Os& operator<<(Os& os, Container const& container)
+    {
+        os << "{ ";
+        for (const auto& item : container)
+            os << item << ' ';
+        return os << '}';
+    }
+     
+    int main()
+    {
+        std::forward_list<int> data{3, 3, 4, 5, 5, 6, 6, 7, 2, 1, 0};
+        std::cout << "Original:\n" << data << '\n';
+        auto divisible_by_3 =  { return (x % 3) == 0; };
+        std::experimental::erase_if(data, divisible_by_3);
+        std::cout << "Erase all items divisible by 3:\n" << data << '\n';
+    }
+```
+
+Saída:
+```
+    Original:
+    { 3 3 4 5 5 6 6 7 2 1 0 }
+    Erase all items divisible by 3:
+    { 4 5 5 7 2 1 }
+```
+
+### Veja também
+
+[ removeremove_if](<#/doc/algorithm/remove>) | remove elementos que satisfazem critérios específicos
+(modelo de função)
+[ removeremove_if](<#/doc/container/forward_list/remove>) | remove elementos que satisfazem critérios específicos
+(função membro pública de `std::forward_list<T,Allocator>`)
+[ erase (std::forward_list)](<#/doc/experimental/forward_list/erase>)(library fundamentals 2 TS) | apaga todos os elementos iguais a um valor específico de uma [std::forward_list](<#/doc/container/forward_list>)
+(modelo de função)

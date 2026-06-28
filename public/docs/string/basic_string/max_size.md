@@ -1,0 +1,89 @@
+# std::basic_string&lt;CharT,Traits,Allocator&gt;::max_size
+
+size_type max_size() const; |  | (noexcept desde C++11)   
+(constexpr desde C++20)  
+
+  
+Retorna o número máximo de elementos que a string é capaz de armazenar devido a limitações de implementação do sistema ou da biblioteca, ou seja, [std::distance](<#/doc/iterator/distance>)(begin(), end()) para a maior string. 
+
+### Parâmetros
+
+(nenhum) 
+
+### Valor de retorno
+
+Número máximo de caracteres. 
+
+### Complexidade
+
+Constante. 
+
+### Exemplo
+
+Execute este código
+```
+    #include <array>
+    #include <climits>
+    #include <iomanip>
+    #include <iostream>
+    #include <locale>
+    #include <string>
+    #include <typeinfo>
+     
+    #include <boost/core/demangle.hpp>
+     
+    template<typename T>
+    void print_basic_string_max_size()
+    {
+        std::basic_string<T> s;
+        auto max_size = s.max_size();
+        std::cout.imbue(std::locale("en_US.UTF-8"));
+        std::cout << "basic_string<" << boost::core::demangle(typeid(T).name())
+                  << ">:\n\t" << max_size << " = ";
+        std::cout << std::setprecision(3) << (double) max_size << " = ";
+        std::cout.imbue(std::locale("C"));
+        std::cout << std::hex << std::setfill('0') << "0x"
+                  << std::setw(sizeof(typename decltype(s)::size_type) << 1)
+                  << max_size << '\n' << std::dec;
+    };
+     
+    int main()
+    {
+        std::cout << "Pointer size: " << CHAR_BIT * sizeof(void*) << " bits\n"
+                     "Maximum sizes:\n";
+     
+        print_basic_string_max_size<char>();
+        print_basic_string_max_size<char16_t>();
+        print_basic_string_max_size<char32_t>();
+        print_basic_string_max_size<wchar_t>();
+        print_basic_string_max_size<long>();
+     
+        using CharT = std::array<char, 01232>;
+        print_basic_string_max_size<CharT>();
+    }
+```
+
+Saída possível: 
+```
+    Pointer size: 64 bits
+    Maximum sizes:
+    basic_string<char>:
+            9,223,372,036,854,775,807 = 9.22e+18 = 0x7fffffffffffffff
+    basic_string<char16_t>:
+            4,611,686,018,427,387,903 = 4.61e+18 = 0x3fffffffffffffff
+    basic_string<char32_t>:
+            2,305,843,009,213,693,951 = 2.31e+18 = 0x1fffffffffffffff
+    basic_string<wchar_t>:
+            2,305,843,009,213,693,951 = 2.31e+18 = 0x1fffffffffffffff
+    basic_string<long>:
+            1,152,921,504,606,846,975 = 1.15e+18 = 0x0fffffffffffffff
+    basic_string<std::array<char, 666ul>>:
+            13,848,906,962,244,407 = 1.38e+16 = 0x00313381ec031337
+```
+
+### Ver também
+
+[ sizelength](<#/doc/string/basic_string/size>) |  retorna o número de caracteres   
+(função membro pública)  
+[ sizelength](<#/doc/string/basic_string_view/size>) |  retorna o número de caracteres   
+(função membro pública de `std::basic_string_view<CharT,Traits>`)

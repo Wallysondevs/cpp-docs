@@ -1,0 +1,49 @@
+# Guias de dedução para std::deque
+
+Definido no cabeçalho `[<deque>](<#/doc/header/deque>)`
+
+```c
+template< class InputIt,
+class Alloc = std::allocator<
+typename std::iterator_traits<InputIt>::value_type> >
+deque( InputIt, InputIt, Alloc = Alloc() )
+-> deque<typename std::iterator_traits<InputIt>::value_type, Alloc>;
+template< ranges::input_range R,
+class Alloc = std::allocator<ranges::range_value_t<R>> >
+deque( std::from_range_t, R&&, Alloc = Alloc() )
+-> deque<ranges::range_value_t<R>, Alloc>;
+```
+
+1) Este [guia de dedução](<#/doc/language/ctad>) é fornecido para deque para permitir a dedução a partir de um range de iteradores. Esta sobrecarga participa da resolução de sobrecarga apenas se `InputIt` satisfizer [LegacyInputIterator](<#/doc/named_req/InputIterator>) e `Alloc` satisfizer [Allocator](<#/doc/named_req/Allocator>).
+
+2) Este guia de dedução é fornecido para deque para permitir a dedução a partir de uma tag [`std::from_range_t`](<#/doc/ranges/from_range>) e um [`input_range`](<#/doc/ranges/input_range>).
+
+Nota: a extensão em que a biblioteca determina que um tipo não satisfaz [LegacyInputIterator](<#/doc/named_req/InputIterator>) é não especificada, exceto que, no mínimo, tipos integrais não se qualificam como iteradores de entrada. Da mesma forma, a extensão em que ela determina que um tipo não satisfaz [Allocator](<#/doc/named_req/Allocator>) é não especificada, exceto que, no mínimo, o tipo membro `Alloc::value_type` deve existir e a expressão [std::declval](<#/doc/utility/declval>)<Alloc&>().allocate([std::size_t](<#/doc/types/size_t>){}) deve ser bem-formada quando tratada como um operando não avaliado.
+
+### Notas
+
+Macro de teste de recurso | Valor | Padrão | Recurso
+---|---|---|---
+[`__cpp_lib_containers_ranges`](<#/doc/feature_test>) | [`202202L`](<#/>) | (C++23) | Construção e inserção cientes de ranges; sobrecarga (2)
+
+### Exemplo
+
+Execute este código
+```cpp
+    #include <deque>
+    #include <vector>
+    
+    int main()
+    {
+        std::vector<int> v = {1, 2, 3, 4};
+    
+        // usa guia de dedução explícita para deduzir std::deque<int>
+        std::deque x(v.begin(), v.end());
+    
+        // deduz std::deque<std::vector<int>::iterator>
+        // a primeira fase da resolução de sobrecarga para inicialização por lista seleciona o candidato
+        // sintetizado a partir do construtor de lista de inicializadores; a segunda fase não é realizada
+        // e o guia de dedução não tem efeito
+        std::deque y{v.begin(), v.end()};
+    }
+```

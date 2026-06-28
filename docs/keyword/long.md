@@ -1,0 +1,95 @@
+# Palavra-chave C++: long
+
+### Uso
+
+  * [`long` modificador de tipo](<#/doc/language/types>)
+
+### Exemplo
+
+Execute este código
+```cpp
+    #include <climits>
+    #include <concepts>
+    #include <iostream>
+    #include <limits>
+    #include <locale>
+     
+    static_assert(
+        sizeof(long) >= 32 / CHAR_BIT &&
+        sizeof(unsigned long) >= 32 / CHAR_BIT &&
+        std::numeric_limits<long>::min() <= -2'147'483'647l - 1 && //'
+        std::numeric_limits<long>::max() >= 2'147'483'647l && //'
+        std::numeric_limits<unsigned long>::max() >= 4'294'967'295ul); //'
+     
+    // 'long long' e 'unsigned long long' estão disponíveis desde C++11
+    static_assert(
+        sizeof(long long) >= 64 / CHAR_BIT &&
+        sizeof(unsigned long long) >= 64 / CHAR_BIT &&
+        std::numeric_limits<long long>::min() <= -9'223'372'036'854'775'807ll - 1 &&
+        std::numeric_limits<long long>::max() >= 9'223'372'036'854'775'807ll &&
+        std::numeric_limits<unsigned long long>::max() >= 18'446'744'073'709'551'615ull);
+     
+    // concepts estão disponíveis desde C++20
+    static_assert(
+        std::integral<long> &&
+        std::integral<long long> &&
+        std::integral<unsigned long> &&
+        std::integral<unsigned long long> &&
+        std::floating_point<long double>);
+    // Observe que 'long' não pode modificar 'float'
+     
+    static_assert(
+        std::same_as<decltype(0l), signed long int> &&
+        std::same_as<decltype(0ll), signed long long int> &&
+        std::same_as<decltype(0ul), unsigned long int> &&
+        std::same_as<decltype(0ull), unsigned long long int> &&
+        std::same_as<decltype(0.l), long double>);
+     
+    template <typename T, typename... Ts>
+    concept all_same = (... and std::same_as <T, Ts>);
+     
+    static_assert(
+        all_same<long, long int, signed long, signed long int> &&
+        all_same<unsigned long, unsigned long int> &&
+        all_same<long long, long long int, signed long long, signed long long int> &&
+        all_same<unsigned long long, unsigned long long int>);
+     
+    #define OUT(...) std::cout << #__VA_ARGS__ << " = " << __VA_ARGS__ << '\n'
+     
+    int main()
+    {
+        std::cout.imbue(std::locale("en_US.UTF-8"));
+     
+        OUT(sizeof(long));
+        OUT(std::numeric_limits<long>::min());
+        OUT(std::numeric_limits<long>::max());
+        OUT(std::numeric_limits<unsigned long>::max());
+     
+        OUT(sizeof(long long));
+        OUT(std::numeric_limits<long long>::min());
+        OUT(std::numeric_limits<long long>::max());
+        OUT(std::numeric_limits<unsigned long long>::max());
+    }
+     
+    #undef OUT
+```
+
+Saída possível:
+```
+    sizeof(long) = 8
+    std::numeric_limits<long>::min() = -9,223,372,036,854,775,808
+    std::numeric_limits<long>::max() = 9,223,372,036,854,775,807
+    std::numeric_limits<unsigned long>::max() = 18,446,744,073,709,551,615
+    sizeof(long long) = 8
+    std::numeric_limits<long long>::min() = -9,223,372,036,854,775,808
+    std::numeric_limits<long long>::max() = 9,223,372,036,854,775,807
+    std::numeric_limits<unsigned long long>::max() = 18,446,744,073,709,551,615
+```
+
+### Veja também
+
+  * [Tipos fundamentais](<#/doc/language/types>): [`void`](<#/doc/keyword/void>), [std::nullptr_t](<#/doc/types/nullptr_t>)(desde C++11).
+    * [Tipos integrais](<#/doc/language/types>): [`int`](<#/doc/keyword/int>). [Modificadores](<#/doc/language/types>): [`signed`](<#/doc/keyword/signed>), [`unsigned`](<#/doc/keyword/unsigned>), [`short`](<#/doc/keyword/short>), `long`.
+      * [Tipo booleano](<#/doc/language/types>): [`bool`](<#/doc/keyword/bool>). [Literais booleanos](<#/doc/language/bool_literal>): [`false`](<#/doc/keyword/false>), [`true`](<#/doc/keyword/true>).
+      * [Tipos de caractere](<#/doc/language/types>): [`char`](<#/doc/keyword/char>), [`char8_t`](<#/doc/keyword/char8_t>)(desde C++20), [`char16_t`](<#/doc/keyword/char16_t>), [`char32_t`](<#/doc/keyword/char32_t>)(desde C++11), [`wchar_t`](<#/doc/keyword/wchar_t>).
+    * [Tipos de ponto flutuante](<#/doc/language/types>): [`float`](<#/doc/keyword/float>), [`double`](<#/doc/keyword/double>).
